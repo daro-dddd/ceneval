@@ -53,70 +53,188 @@
       <!-- Chips cargados por JS -->
     </div>
 
-    <!-- Pestaña 1: Fichas Anki -->
+    <!-- Pestaña 1: Fichas Anki (Gemini Notebook Style) -->
     <section id="tab-anki" class="tab-panel active">
-      <div class="anki-container">
-        <div class="card-counter">
-          Ficha <span id="current-card-num">1</span> de <span id="total-cards-num">--</span>
-          &bull; <span id="anki-mastered-count" style="color: var(--success); font-weight:700;">0 Dominadas</span>
-          <button id="sm2-info-btn" class="sm2-info-btn" title="¿Cómo funciona la repetición?">?</button>
-        </div>
+      <div class="notebook-window-container">
+        
+        <!-- Notebook Window Top Header Bar -->
+        <div class="notebook-top-bar">
+          <div class="notebook-header-left">
+            <h2 class="notebook-title" id="notebook-deck-title">Tecnología Web Tarjetas</h2>
+            <button class="notebook-sources-btn" id="notebook-sources-btn" title="Filtrar por materias y fuentes">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              <span id="notebook-sources-count">Ver 18 fuentes</span>
+            </button>
+          </div>
 
-        <div class="flashcard-wrapper" id="flashcard-wrapper">
-          <div class="flashcard" id="flashcard">
-            
-            <!-- Frente de la Tarjeta (Conectores ARRIBA) -->
-            <div class="card-face card-front">
-              <div class="card-top-box">
-                <div class="connector-tags" id="card-front-connectors">
-                  <!-- Conectores Palabras Clave ARRIBA -->
-                </div>
-                <div class="card-badge" id="card-topic-badge">Tema</div>
-                <h3 class="card-question" id="card-question-text">Cargando pregunta...</h3>
-              </div>
-              <div class="card-prompt-hint">
-                Presione o toque la tarjeta para voltear y consultar la respuesta
-              </div>
-            </div>
-
-            <!-- Reverso de la Tarjeta (Conectores ARRIBA, Referencia ABAJO) -->
-            <div class="card-face card-back">
-              <div class="card-top-box">
-                <div class="connector-tags" id="card-back-connectors">
-                  <!-- Conectores Palabras Clave ARRIBA -->
-                </div>
-                <div class="card-badge" id="card-back-badge">Respuesta</div>
-                <img id="card-image-view" class="card-image-view" style="display: none;" alt="Imagen del apunte">
-                <div class="card-answer" id="card-answer-text">Cargando respuesta...</div>
-                <div id="card-code-container" style="display: none;">
-                  <pre class="card-code-block"><code id="card-code-text"></code></pre>
-                </div>
-              </div>
-              
-              <!-- REFERENCIA ABAJO EN LETRAS PEQUEÑAS -->
-              <div class="card-bottom-citation" id="card-citation-box">
-                <!-- Cita bibliográfica al final -->
-              </div>
-            </div>
-
+          <div class="notebook-header-right">
+            <button class="notebook-action-icon" id="sm2-info-btn" title="¿Cómo funciona la repetición?">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </button>
+            <button class="notebook-action-icon" id="nb-share-btn" title="Compartir conjunto">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+            </button>
+            <button class="notebook-action-icon" id="nb-fullscreen-btn" title="Pantalla completa">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            </button>
+            <button class="notebook-action-icon" id="nb-top-menu-btn" title="Opciones del conjunto">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+            </button>
           </div>
         </div>
 
-        <!-- Botones de Calificación SM-2 -->
-        <div class="anki-rating-controls" id="anki-controls" style="visibility: hidden;">
-          <button class="rate-btn rate-hard" id="btn-rate-hard">
-            Difícil
-            <small>Repasar Hoy</small>
+        <!-- Instruction Hint -->
+        <div class="notebook-instruction-text">
+          Pulsa la tecla de espacio para girar y ← / → para desplazarte
+        </div>
+
+        <!-- Stage Area with Glow Aura & Flashcard -->
+        <div class="notebook-stage-wrapper">
+          <div class="notebook-glow-aurora left-aurora"></div>
+          <div class="notebook-glow-aurora right-aurora"></div>
+
+          <!-- Central Flashcard Wrapper -->
+          <div class="flashcard-wrapper" id="flashcard-wrapper">
+            <div class="flashcard" id="flashcard">
+              
+              <!-- Frente de la Tarjeta -->
+              <div class="card-face card-front">
+                <div class="notebook-card-header">
+                  <span class="notebook-card-counter" id="nb-card-counter-front">1/100</span>
+                  <button class="notebook-card-menu-trigger" id="nb-card-menu-btn" title="Opciones">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+                  </button>
+                </div>
+
+                <div class="notebook-card-body">
+                  <div class="connector-tags" id="card-front-connectors"></div>
+                  <div class="card-badge" id="card-topic-badge">Tema</div>
+                  <h3 class="card-question" id="card-question-text">Cargando pregunta...</h3>
+                </div>
+
+                <div class="notebook-card-footer-prompt">
+                  Mira la respuesta
+                </div>
+              </div>
+
+              <!-- Reverso de la Tarjeta -->
+              <div class="card-face card-back">
+                <div class="notebook-card-header">
+                  <span class="notebook-card-counter" id="nb-card-counter-back">1/100</span>
+                  <button class="notebook-card-menu-trigger" id="nb-card-menu-btn-back" title="Opciones">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+                  </button>
+                </div>
+
+                <div class="notebook-card-body">
+                  <div class="connector-tags" id="card-back-connectors"></div>
+                  <div class="card-badge" id="card-back-badge">Respuesta</div>
+                  <img id="card-image-view" class="card-image-view" style="display: none;" alt="Imagen del apunte">
+                  <div class="card-answer" id="card-answer-text">Cargando respuesta...</div>
+                  <div id="card-code-container" style="display: none;">
+                    <pre class="card-code-block"><code id="card-code-text"></code></pre>
+                  </div>
+                </div>
+
+                <div class="notebook-card-footer-row">
+                  <button class="notebook-explain-btn" id="nb-explain-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    Explicar
+                  </button>
+                  <div class="card-bottom-citation" id="card-citation-box"></div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Dropdown Options Menu inside Stage -->
+          <div class="notebook-dropdown-menu" id="notebook-dropdown-menu">
+            <button class="notebook-menu-item" id="nb-menu-reset">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              Reiniciar conjunto
+            </button>
+            <button class="notebook-menu-item" id="nb-menu-shuffle">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+              Mezclar conjunto
+            </button>
+            <button class="notebook-menu-item" id="nb-menu-download">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Descargar conjunto
+            </button>
+            <div class="notebook-menu-divider"></div>
+            <button class="notebook-menu-item" id="nb-menu-add">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="18" y1="12" x2="6" y2="12"></line></svg>
+              Añadir nueva tarjeta didáctica
+            </button>
+            <button class="notebook-menu-item" id="nb-menu-edit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+              Modificar tarjeta didáctica
+            </button>
+            <button class="notebook-menu-item item-danger" id="nb-menu-delete">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Eliminar tarjeta didáctica
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Navigation Controls Under Card -->
+        <div class="notebook-nav-controls">
+          <button class="notebook-nav-btn" id="nb-prev-btn" title="Ficha anterior (←)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           </button>
-          <button class="rate-btn rate-good" id="btn-rate-good">
-            Bueno
-            <small>Intervalo Medio</small>
+
+          <button class="notebook-stat-pill pill-danger" id="nb-diff-count-pill" title="Fichas difíciles / por repasar">
+            <span class="pill-icon">✕</span>
+            <span id="nb-bad-num">0</span>
           </button>
-          <button class="rate-btn rate-easy" id="btn-rate-easy">
-            Fácil / Dominado
-            <small>Siguiente Fase</small>
+
+          <button class="notebook-stat-pill pill-success" id="nb-good-count-pill" title="Fichas dominadas">
+            <span id="nb-good-num">0</span>
+            <span class="pill-icon">✓</span>
+          </button>
+
+          <button class="notebook-nav-btn" id="nb-next-btn" title="Siguiente ficha (→)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </button>
         </div>
+
+        <!-- Rating Buttons for Spaced Repetition SM-2 -->
+        <div class="anki-rating-controls notebook-rating-controls" id="anki-controls" style="visibility: hidden;">
+          <button class="rate-btn rate-hard" id="btn-rate-hard" data-grade="hard">
+            Difícil
+            <small>Repasar hoy</small>
+          </button>
+          <button class="rate-btn rate-good" id="btn-rate-good" data-grade="good">
+            Bueno
+            <small>Intervalo medio</small>
+          </button>
+          <button class="rate-btn rate-easy" id="btn-rate-easy" data-grade="easy">
+            Fácil / Dominado
+            <small>Siguiente fase</small>
+          </button>
+        </div>
+
+        <!-- Bottom Footer Bar -->
+        <div class="notebook-footer-bar">
+          <div class="notebook-feedback-btns">
+            <button class="notebook-feedback-btn" id="nb-feedback-up" title="Contenido adecuado">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+              Contenido adecuado
+            </button>
+            <button class="notebook-feedback-btn" id="nb-feedback-down" title="Contenido inadecuado">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path></svg>
+              Contenido inadecuado
+            </button>
+          </div>
+
+          <div class="notebook-disclaimer">
+            Gemini Notebook puede cometer errores, así que comprueba sus respuestas.
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -497,19 +615,70 @@
     </button>
   </nav>
 
+  <!-- Modal Selección de Fuentes / Materias CENEVAL (NotebookLM Style) -->
+  <div id="nb-sources-modal" class="sm2-modal">
+    <div class="sm2-modal-content nb-modal-box">
+      <button id="nb-sources-close" class="sm2-modal-close">&times;</button>
+      <h3 style="display:flex; align-items:center; gap:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pastel-lavender)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        Fuentes y Materias de Estudio CENEVAL
+      </h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">
+        Selecciona la fuente o el conjunto temático para cargar las tarjetas didácticas correspondientes:
+      </p>
+      <div id="nb-sources-list" class="nb-sources-grid">
+        <!-- Render dinámico de materias por JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Explicación Detallada de la Tarjeta (✨ Explicar NotebookLM Style) -->
+  <div id="nb-explain-modal" class="sm2-modal">
+    <div class="sm2-modal-content nb-modal-box">
+      <button id="nb-explain-close" class="sm2-modal-close">&times;</button>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span class="ai-badge">✨ DESGLOSE & EXPLICACIÓN DE IA</span>
+        <h3 id="nb-explain-title" style="font-size:1.1rem; margin:0;">Explicación del Concepto</h3>
+      </div>
+      <div id="nb-explain-body" class="nb-explain-body">
+        <p>Cargando análisis detallado...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Modificar Tarjeta Didáctica (NotebookLM Edit Card) -->
+  <div id="nb-edit-modal" class="sm2-modal">
+    <div class="sm2-modal-content nb-modal-box">
+      <button id="nb-edit-close" class="sm2-modal-close">&times;</button>
+      <h3 style="margin-bottom:14px; font-size:1.1rem;">Modificar Tarjeta Didáctica</h3>
+      <div class="form-group">
+        <label>Pregunta / Frente</label>
+        <textarea id="nb-edit-question" class="form-textarea" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Respuesta / Reverso</label>
+        <textarea id="nb-edit-answer" class="form-textarea" rows="4"></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px;">
+        <button id="nb-edit-cancel-btn" class="topic-chip">Cancelar</button>
+        <button id="nb-edit-save-btn" class="save-card-btn" style="width:auto; padding:8px 20px;">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
   <!-- OCR & AI Vision Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="js/ai-vision-engine.js?v=28"></script>
-  <script src="js/topics-data.js?v=28"></script>
-  <script src="js/anki-engine.js?v=28"></script>
-  <script src="js/photo-uploader.js?v=28"></script>
-  <script src="js/quiz-engine.js?v=28"></script>
-  <script src="js/audio-notes-engine.js?v=28"></script>
-  <script src="js/app.js?v=28"></script>
+  <script src="js/ai-vision-engine.js?v=29"></script>
+  <script src="js/topics-data.js?v=29"></script>
+  <script src="js/anki-engine.js?v=29"></script>
+  <script src="js/photo-uploader.js?v=29"></script>
+  <script src="js/quiz-engine.js?v=29"></script>
+  <script src="js/audio-notes-engine.js?v=29"></script>
+  <script src="js/app.js?v=29"></script>
 
   <!-- Service Worker Registration & Cache Auto-Buster -->
   <script>
-    const PWA_VERSION = 'v28';
+    const PWA_VERSION = 'v29';
     if (localStorage.getItem('ceneval_sw_ver') !== PWA_VERSION) {
       localStorage.setItem('ceneval_sw_ver', PWA_VERSION);
       if ('serviceWorker' in navigator) {
@@ -526,15 +695,16 @@
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=28')
+        navigator.serviceWorker.register('./sw.js?v=29')
           .then(reg => {
-            console.log('Service Worker v28 registrado:', reg.scope);
+            console.log('Service Worker v29 registrado:', reg.scope);
             reg.update();
           })
           .catch(err => console.log('Error de Service Worker:', err));
       });
     }
   </script>
+
   <!-- Modal Explicación Algoritmo SM-2 Repetición -->
   <div id="sm2-modal" class="sm2-modal">
     <div class="sm2-modal-content">

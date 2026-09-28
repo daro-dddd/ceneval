@@ -285,12 +285,18 @@ document.addEventListener('DOMContentLoaded', () => {
     topicFilterBar.appendChild(chip);
   });
 
-  // 6. Renderizado Limpio de Fichas Anki
+  // 6. Renderizado de Fichas Anki con Interfaz Estilo Gemini Notebook
   const flashcardWrapper = document.getElementById('flashcard-wrapper');
   const flashcard = document.getElementById('flashcard');
   const ankiControls = document.getElementById('anki-controls');
+  const nbDropdownMenu = document.getElementById('notebook-dropdown-menu');
 
-  flashcardWrapper.addEventListener('click', () => {
+  flashcardWrapper.addEventListener('click', (e) => {
+    // Si se hizo clic en botones internos (como el botón Explicar o el menú de 3 puntos), no voltear la tarjeta
+    if (e.target.closest('.notebook-explain-btn') || e.target.closest('.notebook-card-menu-trigger')) {
+      return;
+    }
+
     isCardFlipped = !isCardFlipped;
     if (isCardFlipped) {
       flashcard.classList.add('flipped');
@@ -301,23 +307,353 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Alternar Menú de Opciones de 3 Puntos
+  function toggleNotebookMenu(e) {
+    if (e) e.stopPropagation();
+    if (!nbDropdownMenu) return;
+    nbDropdownMenu.classList.toggle('show');
+  }
+
+  const nbTopMenuBtn = document.getElementById('nb-top-menu-btn');
+  const nbCardMenuBtn = document.getElementById('nb-card-menu-btn');
+  const nbCardMenuBtnBack = document.getElementById('nb-card-menu-btn-back');
+
+  if (nbTopMenuBtn) nbTopMenuBtn.addEventListener('click', toggleNotebookMenu);
+  if (nbCardMenuBtn) nbCardMenuBtn.addEventListener('click', toggleNotebookMenu);
+  if (nbCardMenuBtnBack) nbCardMenuBtnBack.addEventListener('click', toggleNotebookMenu);
+
+  document.addEventListener('click', (e) => {
+    if (nbDropdownMenu && !e.target.closest('.notebook-dropdown-menu') && 
+        !e.target.closest('.notebook-action-icon') && 
+        !e.target.closest('.notebook-card-menu-trigger')) {
+      nbDropdownMenu.classList.remove('show');
+    }
+  });
+
+  // Acciones del Menú de 3 Puntos
+  const nbMenuReset = document.getElementById('nb-menu-reset');
+  if (nbMenuReset) {
+    nbMenuReset.addEventListener('click', () => {
+      currentCardIndex = 0;
+      saveCurrentStudyState();
+      renderCurrentCard();
+      if (nbDropdownMenu) nbDropdownMenu.classList.remove('show');
+      showToast('🔄 Conjunto de tarjetas reiniciado al comienzo');
+    });
+  }
+
+  const nbMenuShuffle = document.getElementById('nb-menu-shuffle');
+  if (nbMenuShuffle) {
+    nbMenuShuffle.addEventListener('click', () => {
+      currentCardList = [...currentCardList].sort(() => Math.random() - 0.5);
+      currentCardIndex = 0;
+      saveCurrentStudyState();
+      renderCurrentCard();
+      if (nbDropdownMenu) nbDropdownMenu.classList.remove('show');
+      showToast('🔀 Conjunto de tarjetas mezclado aleatoriamente');
+    });
+  }
+
+  const nbMenuDownload = document.getElementById('nb-menu-download');
+  if (nbMenuDownload) {
+    nbMenuDownload.addEventListener('click', () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentCardList, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `ceneval_notebook_cards_${activeTopicId}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      if (nbDropdownMenu) nbDropdownMenu.classList.remove('show');
+      showToast('📥 Mazo de tarjetas descargado correctamente');
+    });
+  }
+
+  const nbMenuAdd = document.getElementById('nb-menu-add');
+  if (nbMenuAdd) {
+    nbMenuAdd.addEventListener('click', () => {
+      const uploadTabBtn = document.querySelector('.nav-item[data-tab="tab-upload"]');
+      if (uploadTabBtn) uploadTabBtn.click();
+      if (nbDropdownMenu) nbDropdownMenu.classList.remove('show');
+    });
+  }
+
+  // Modificar Tarjeta Didáctica Modal Handler
+  const nbEditModal = document.getElementById('nb-edit-modal');
+  const nbMenuEdit = document.getElementById('nb-menu-edit');
+  const nbEditQuestion = document.getElementById('nb-edit-question');
+  const nbEditAnswer = document.getElementById('nb-edit-answer');
+  const nbEditClose = document.getElementById('nb-edit-close');
+  const nbEditCancel = document.getElementById('nb-edit-cancel-btn');
+  const nbEditSave = document.getElementById('nb-edit-save-btn');
+
+  if (nbMenuEdit) {
+    nbMenuEdit.addEventListener('click', () => {
+      if (currentCardList.length === 0) return;
+      const card = currentCardList[currentCardIndex];
+      nbEditQuestion.value = card.question || '';
+      nbEditAnswer.value = card.answer || '';
+      if (nbEditModal) nbEditModal.classList.add('active');
+      if (nbDropdownMenu) nbDropdownMenu.classList.remove('show');
+    });
+  }
+  if (nbEditClose) nbEditClose.addEventListener('click', () => nbEditModal.classList.remove('active'));
+  if (nbEditCancel) nbEditCancel.addEventListener('click', () => nbEditModal.classList.remove('active'));
+  if (nbEditSave) {
+    nbEditSave.addEventListener('click', () => {
+      if (currentCardList.length === 0) return;
+      const card = currentCardList[currentCardIndex];
+      card.question = nbEditQuestion.value.trim();
+      card.answer = nbEditAnswer.value.trim();
+      renderCurrentCard();
+      nbEditModal.classList.remove('active');
+      showToast('✏️ Tarjeta modificada guardada correctamente');
+    });
+  }
+
+  // Eliminar Tarjeta Didáctica
+  const nbMenuDelete = document.getElementById('nb-menu-delete');
+  if (nbMenuDelete) {
+    nbMenuDelete.addEventListener('click', () => {
+      if (currentCardList.length === 0) return;
+      const card = currentCardList[currentCardIndex];
+      currentCardList.splice(currentCardIndex, 1);
+      if (currentCardIndex >= currentCardList.length) {
+        currentCardIndex = Math.max(0, currentCardList.length - 1);
+      }
+      renderCurrentCard();
+      if (nbDropdownMenu) nbDropdownMenu.classList.remove('show');
+      showToast('🗑️ Tarjeta eliminada del conjunto');
+    });
+  }
+
+  // Botones de Navegación del Cuadro NotebookLM (Anterior / Siguiente)
+  const nbPrevBtn = document.getElementById('nb-prev-btn');
+  const nbNextBtn = document.getElementById('nb-next-btn');
+
+  if (nbPrevBtn) {
+    nbPrevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentCardList.length === 0) return;
+      currentCardIndex = (currentCardIndex - 1 + currentCardList.length) % currentCardList.length;
+      saveCurrentStudyState();
+      renderCurrentCard();
+    });
+  }
+
+  if (nbNextBtn) {
+    nbNextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentCardList.length === 0) return;
+      currentCardIndex = (currentCardIndex + 1) % currentCardList.length;
+      saveCurrentStudyState();
+      renderCurrentCard();
+    });
+  }
+
+  // Atajos de Teclado (Barra de Espacio = Voltear, Flechas = Navegar)
+  document.addEventListener('keydown', (e) => {
+    // Evitar disparar si el usuario está escribiendo en una caja de texto
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+    const tabAnki = document.getElementById('tab-anki');
+    if (!tabAnki || !tabAnki.classList.contains('active')) return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      flashcardWrapper.click();
+    } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
+      if (nbPrevBtn) nbPrevBtn.click();
+    } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
+      if (nbNextBtn) nbNextBtn.click();
+    }
+  });
+
+  // Modal Fuentes / Selector de Materias (Ver X Fuentes)
+  const nbSourcesBtn = document.getElementById('notebook-sources-btn');
+  const nbSourcesModal = document.getElementById('nb-sources-modal');
+  const nbSourcesClose = document.getElementById('nb-sources-close');
+  const nbSourcesList = document.getElementById('nb-sources-list');
+
+  if (nbSourcesBtn && nbSourcesModal) {
+    nbSourcesBtn.addEventListener('click', () => {
+      renderSourcesModalList();
+      nbSourcesModal.classList.add('active');
+    });
+  }
+  if (nbSourcesClose && nbSourcesModal) {
+    nbSourcesClose.addEventListener('click', () => nbSourcesModal.classList.remove('active'));
+    nbSourcesModal.addEventListener('click', (e) => {
+      if (e.target === nbSourcesModal) nbSourcesModal.classList.remove('active');
+    });
+  }
+
+  function renderSourcesModalList() {
+    if (!nbSourcesList) return;
+    nbSourcesList.innerHTML = '';
+
+    const sourcesOptions = [
+      { id: 'all', name: 'Todos los Temas', count: '100 Fichas' },
+      { id: 'difficult', name: 'Por Repasar / Difíciles', count: `${ankiEngine.getStats().difficult} Fichas` },
+      { id: 'area_1', name: 'Área 1: Requerimientos & Software', count: '25 Fichas' },
+      { id: 'area_2', name: 'Área 2: Arquitectura, UX & BD', count: '25 Fichas' },
+      { id: 'area_3', name: 'Área 3: Programación & Calidad', count: '25 Fichas' },
+      { id: 'area_4', name: 'Área 4: Transversal Comprensión Lectora', count: '25 Fichas' }
+    ];
+
+    TOPICS_DATA.forEach(topic => {
+      sourcesOptions.push({
+        id: topic.id,
+        name: topic.name,
+        count: `${topic.cards ? topic.cards.length : 0} Fichas`
+      });
+    });
+
+    sourcesOptions.forEach(opt => {
+      const card = document.createElement('div');
+      card.className = `nb-source-card ${activeTopicId === opt.id ? 'active' : ''}`;
+      card.innerHTML = `
+        <span>${opt.name}</span>
+        <small style="opacity:0.75; font-size:0.75rem;">${opt.count}</small>
+      `;
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.topic-chip').forEach(c => {
+          if (c.getAttribute('data-topic') === opt.id) c.classList.add('active');
+          else c.classList.remove('active');
+        });
+        activeTopicId = opt.id;
+        currentCardList = ankiEngine.getCardsForTopic(activeTopicId);
+        currentCardIndex = 0;
+        saveCurrentStudyState();
+        renderCurrentCard();
+        nbSourcesModal.classList.remove('active');
+      });
+      nbSourcesList.appendChild(card);
+    });
+  }
+
+  // Modal Explicación Detallada (✨ Explicar)
+  const nbExplainBtn = document.getElementById('nb-explain-btn');
+  const nbExplainModal = document.getElementById('nb-explain-modal');
+  const nbExplainClose = document.getElementById('nb-explain-close');
+  const nbExplainTitle = document.getElementById('nb-explain-title');
+  const nbExplainBody = document.getElementById('nb-explain-body');
+
+  if (nbExplainBtn && nbExplainModal) {
+    nbExplainBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentCardList.length === 0) return;
+      const card = currentCardList[currentCardIndex];
+
+      if (nbExplainTitle) nbExplainTitle.textContent = `Análisis Explicativo: ${card.badge || 'Concepto Técnico'}`;
+      if (nbExplainBody) {
+        nbExplainBody.innerHTML = `
+          <div style="background:rgba(168,85,247,0.1); border-left:3px solid var(--pastel-lavender); padding:12px 16px; border-radius:8px; margin-bottom:14px;">
+            <strong style="color:var(--pastel-lavender);">Pregunta / Concepto:</strong>
+            <p style="margin:4px 0 0 0; font-weight:600; color:#ffffff;">${card.question}</p>
+          </div>
+
+          <h4 style="color:#38bdf8; font-size:0.95rem; margin:14px 0 6px 0;">💡 Resumen Conceptual Explicado:</h4>
+          <p>${card.answer.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")}</p>
+
+          <h4 style="color:#34d399; font-size:0.95rem; margin:14px 0 6px 0;">🎯 Clave de Memorización CENEVAL:</h4>
+          <p>Para resolver reactivos de este tema en el examen, identifique los conectores clave: <em>${card.connectors ? card.connectors.join(', ') : 'Conceptos Clave'}</em>.</p>
+
+          ${card.citation ? `<p style="font-size:0.8rem; color:var(--text-muted); margin-top:12px;"><strong>Referencia Oficial:</strong> ${card.citation}</p>` : ''}
+        `;
+      }
+      nbExplainModal.classList.add('active');
+    });
+  }
+
+  if (nbExplainClose && nbExplainModal) {
+    nbExplainClose.addEventListener('click', () => nbExplainModal.classList.remove('active'));
+    nbExplainModal.addEventListener('click', (e) => {
+      if (e.target === nbExplainModal) nbExplainModal.classList.remove('active');
+    });
+  }
+
+  // Modos de Compartir y Pantalla Completa
+  const nbShareBtn = document.getElementById('nb-share-btn');
+  const nbFullscreenBtn = document.getElementById('nb-fullscreen-btn');
+  const nbContainer = document.querySelector('.notebook-window-container');
+
+  if (nbShareBtn) {
+    nbShareBtn.addEventListener('click', () => {
+      if (currentCardList.length === 0) return;
+      const card = currentCardList[currentCardIndex];
+      const shareText = `CENEVAL Master Ficha [${card.badge}]:\nQ: ${card.question}\nA: ${card.answer}`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText);
+        showToast('📋 Apunte copiado al portapapeles');
+      } else {
+        showToast('Ficha seleccionada para estudio');
+      }
+    });
+  }
+
+  if (nbFullscreenBtn && nbContainer) {
+    nbFullscreenBtn.addEventListener('click', () => {
+      nbContainer.classList.toggle('nb-fullscreen');
+    });
+  }
+
+  // Retroalimentación de Contenido (Thumbs Up / Down)
+  const nbFeedbackUp = document.getElementById('nb-feedback-up');
+  const nbFeedbackDown = document.getElementById('nb-feedback-down');
+  if (nbFeedbackUp) {
+    nbFeedbackUp.addEventListener('click', () => showToast('👍 ¡Gracias por confirmar que el contenido es adecuado!'));
+  }
+  if (nbFeedbackDown) {
+    nbFeedbackDown.addEventListener('click', () => showToast('👎 Gracias por tus comentarios, revisaremos la calidad del apunte.'));
+  }
+
+  // Función Principal de Renderizado de Tarjeta
   function renderCurrentCard() {
     isCardFlipped = false;
     flashcard.classList.remove('flipped');
     ankiControls.style.visibility = 'hidden';
 
-    const cardNumEl = document.getElementById('current-card-num');
-    const totalNumEl = document.getElementById('total-cards-num');
     const stats = ankiEngine.getStats();
 
-    // Actualiza contador de difíciles en chip
+    // Actualizar contadores de badge inferior estilo NotebookLM
+    const badNumEl = document.getElementById('nb-bad-num');
+    const goodNumEl = document.getElementById('nb-good-num');
+    if (badNumEl) badNumEl.textContent = stats.difficult.toString();
+    if (goodNumEl) goodNumEl.textContent = stats.mastered.toString();
+
+    // Actualizar título dinámico del mazo
+    const deckTitleEl = document.getElementById('notebook-deck-title');
+    const sourcesCountEl = document.getElementById('notebook-sources-count');
+    if (deckTitleEl) {
+      if (activeTopicId === 'all') {
+        deckTitleEl.textContent = 'Tecnología Web Tarjetas';
+      } else if (activeTopicId === 'difficult') {
+        deckTitleEl.textContent = 'Tarjetas por Repasar / Difíciles';
+      } else if (activeTopicId.startsWith('area_')) {
+        const areaMatch = cenevalAreas.find(a => a.id === activeTopicId);
+        deckTitleEl.textContent = areaMatch ? `${areaMatch.name} Tarjetas` : 'Mazo de Tarjetas';
+      } else {
+        const topicMatch = TOPICS_DATA.find(t => t.id === activeTopicId);
+        deckTitleEl.textContent = topicMatch ? `${topicMatch.name} Tarjetas` : 'Mazo de Tarjetas';
+      }
+    }
+    if (sourcesCountEl) {
+      sourcesCountEl.textContent = `Ver ${currentCardList.length} fuentes`;
+    }
+
+    // Actualiza contador de difíciles en chip legacy si existe
     if (diffChip) {
       diffChip.textContent = `Por Repasar / Difíciles (${stats.difficult})`;
     }
 
     if (currentCardList.length === 0) {
-      cardNumEl.textContent = '0';
-      totalNumEl.textContent = '0';
+      const cntFront = document.getElementById('nb-card-counter-front');
+      const cntBack = document.getElementById('nb-card-counter-back');
+      if (cntFront) cntFront.textContent = '0/0';
+      if (cntBack) cntBack.textContent = '0/0';
+
       document.getElementById('card-question-text').textContent = 'No hay tarjetas disponibles para este filtro.';
       document.getElementById('card-answer-text').textContent = '';
       document.getElementById('card-topic-badge').textContent = 'Vacío';
@@ -334,9 +670,10 @@ document.addEventListener('DOMContentLoaded', () => {
     saveCurrentStudyState();
 
     const card = currentCardList[currentCardIndex];
-    cardNumEl.textContent = (currentCardIndex + 1).toString();
-    totalNumEl.textContent = currentCardList.length.toString();
-    document.getElementById('anki-mastered-count').textContent = `${stats.mastered} Dominadas`;
+    const cntFront = document.getElementById('nb-card-counter-front');
+    const cntBack = document.getElementById('nb-card-counter-back');
+    if (cntFront) cntFront.textContent = `${currentCardIndex + 1}/${currentCardList.length}`;
+    if (cntBack) cntBack.textContent = `${currentCardIndex + 1}/${currentCardList.length}`;
 
     // Frente
     document.getElementById('card-topic-badge').textContent = card.badge || card.topicName || 'General';
@@ -347,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (card.connectors && card.connectors.length > 0) {
       card.connectors.forEach(conn => {
         const tag = document.createElement('span');
-        tag.className = 'connector-tag';
+        tag.className = 'connector-pill';
         tag.textContent = conn;
         frontConnEl.appendChild(tag);
       });
@@ -375,7 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (card.connectors && card.connectors.length > 0) {
       card.connectors.forEach(conn => {
         const tag = document.createElement('span');
-        tag.className = 'connector-tag';
+        tag.className = 'connector-pill';
         tag.textContent = conn;
         backConnEl.appendChild(tag);
       });

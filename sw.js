@@ -1,18 +1,18 @@
-const CACHE_NAME = 'ceneval-anki-v28';
+const CACHE_NAME = 'ceneval-anki-v29';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
   './manifest.json',
-  './favicon.ico?v=28',
-  './assets/logo.png?v=28',
-  './js/ai-vision-engine.js?v=28',
-  './js/topics-data.js?v=28',
-  './js/anki-engine.js?v=28',
-  './js/photo-uploader.js?v=28',
-  './js/quiz-engine.js?v=28',
-  './js/audio-notes-engine.js?v=28',
-  './js/app.js?v=28'
+  './favicon.ico?v=29',
+  './assets/logo.png?v=29',
+  './js/ai-vision-engine.js?v=29',
+  './js/topics-data.js?v=29',
+  './js/anki-engine.js?v=29',
+  './js/photo-uploader.js?v=29',
+  './js/quiz-engine.js?v=29',
+  './js/audio-notes-engine.js?v=29',
+  './js/app.js?v=29'
 ];
 
 self.addEventListener('install', (event) => {
