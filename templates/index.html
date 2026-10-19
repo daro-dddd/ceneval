@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>EGEL Plus ISOFT - Simulador Oficial CENEVAL</title>
+  
+  <!-- SEO y Accesibilidad Cognitiva -->
+  <meta name="description" content="Simulador de examen EGEL Plus en Ingeniería de Software y Comprensión Lectora con rigor oficial Ceneval y asistente pedagógico anti-saturación.">
+  <meta name="theme-color" content="#0284c7">
+  
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/static/icons/logo.svg">
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EGEL ISOFT">
+
+  <!-- Tipografía Google Fonts de alta legibilidad -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+
+  <!-- Estilos Principales -->
+  <link rel="stylesheet" href="/static/css/style.css?v=2.1">
+</head>
+<body>
+
+  <!-- Barra Superior Global -->
+  <header class="global-header">
+    <div class="brand" id="btn-brand-home" title="Ir al inicio">
+      <div class="brand-icon">
+        <img src="/static/icons/logo.svg" alt="EGEL Plus ISOFT Logo">
+      </div>
+      <div class="brand-title">
+        EGEL<span style="color:#fbbf24;">⁺</span> ISOFT
+        <span class="brand-badge">Simulador</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Botón de Bibliografía y Estructura Oficial CENEVAL -->
+      <button id="btn-open-bibliography" class="icon-button" style="width:auto; padding:0.4rem 0.85rem; font-size:0.85rem; font-weight:600; gap:0.4rem;" title="Consultar Estructura y Bibliografía Oficial CENEVAL" onclick="App.openBibliographyModal()">
+        <span>📚 Bibliografía Oficial</span>
+      </button>
+
+      <!-- Botón de Instalación PWA (se activa automáticamente cuando esté disponible) -->
+      <button id="btn-pwa-install" class="pwa-install-btn" title="Instalar como aplicación en escritorio o móvil">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Instalar App</span>
+      </button>
+
+      <!-- Selector de Modo Claro / Modo Oscuro -->
+      <button id="btn-toggle-theme" class="icon-button" title="Alternar Modo Claro / Oscuro" aria-label="Cambiar tema">
+        <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-container">
+
+    <!-- ====================================================================
+         VISTA 1: INICIO Y SELECTOR DE MODALIDADES (30 Reactivos c/u)
+         ==================================================================== -->
+    <section id="view-home" class="view-section active">
+      <div class="hero-header">
+        <div class="hero-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Basado en la Guía Oficial CENEVAL 2024 / 2025
+        </div>
+        <h1 class="hero-title">Simulador EGEL Plus ISOFT</h1>
+        <p class="hero-subtitle">
+          Diseñado para el aprendizaje sin sobrecarga cognitiva. Exámenes estructurados de 30 reactivos, con retroalimentación técnica exhaustiva por cada opción.
+        </p>
+      </div>
+
+      <!-- Grid de 4 Modalidades -->
+      <div class="modalities-grid">
+
+        <!-- 1. Simulador Disciplinar ISOFT -->
+        <article class="modality-card highlight">
+          <span class="modality-badge-top">Disciplinar</span>
+          <div class="modality-icon-wrapper">
+            💻
+          </div>
+          <h2 class="modality-title">Simulador Disciplinar ISOFT</h2>
+          <p class="modality-desc">
+            30 reactivos distribuidos en las 4 áreas nucleares: Análisis de Requerimientos, Diseño Arquitectónico, Desarrollo de Software y Gestión de Proyectos.
+          </p>
+          <div class="modality-meta">
+            <span>📝 30 preguntas</span>
+            <span>⏱️ 1 a la vez</span>
+            <span>⚡ Rigor Ceneval</span>
+          </div>
+          <button class="btn-start-exam" onclick="App.startExam('disciplinar')">
+            Comenzar Simulador ISOFT
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </article>
+
+        <!-- 2. Simulador Comprensión Lectora -->
+        <article class="modality-card">
+          <span class="modality-badge-top">Transversal</span>
+          <div class="modality-icon-wrapper">
+            📖
+          </div>
+          <h2 class="modality-title">Simulador Comprensión Lectora</h2>
+          <p class="modality-desc">
+            30 reactivos con lecturas breves en Ámbito de Estudio, Ámbito Literario y Participación Social; evaluando identificación, interpretación y evaluación crítica.
+          </p>
+          <div class="modality-meta">
+            <span>📝 30 preguntas</span>
+            <span>📚 Lecturas breves</span>
+            <span>🎯 3 subáreas</span>
+          </div>
+          <button class="btn-start-exam" onclick="App.startExam('lectura')">
+            Comenzar Comprensión Lectora
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </article>
+
+        <!-- 3. Simulador Integral EGEL Plus -->
+        <article class="modality-card">
+          <span class="modality-badge-top">Examen Completo</span>
+          <div class="modality-icon-wrapper">
+            🏆
+          </div>
+          <h2 class="modality-title">Simulador Integral EGEL Plus</h2>
+          <p class="modality-desc">
+            30 reactivos proporcionales que combinan la sección disciplinar de Ingeniería de Software (18 reactivos) y el módulo de Comprensión Lectora (12 reactivos).
+          </p>
+          <div class="modality-meta">
+            <span>📝 30 preguntas mixtas</span>
+            <span>⚖️ Proporcional</span>
+            <span>🌟 Evaluación global</span>
+          </div>
+          <button class="btn-start-exam" onclick="App.startExam('integral')">
+            Comenzar Simulador Integral
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </article>
+
+        <!-- 4. Práctica por Área Específica -->
+        <article class="modality-card">
+          <span class="modality-badge-top">Refuerzo Focalizado</span>
+          <div class="modality-icon-wrapper">
+            🎯
+          </div>
+          <h2 class="modality-title">Práctica por Área Específica</h2>
+          <p class="modality-desc">
+            30 reactivos concentrados 100% en el área que elijas para reforzar puntos débiles y dominar temas específicos antes de presentar el examen.
+          </p>
+          <div class="modality-meta">
+            <span>📝 30 preguntas</span>
+            <span>🔍 A tu elección</span>
+            <span>💡 Refuerzo puro</span>
+          </div>
+          <button class="btn-start-exam" onclick="App.openAreaSelectorModal()">
+            Seleccionar Área Específica
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </article>
+
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         VISTA 2: PANTALLA DE EXAMEN (Anti-Saturación: 1 sola tarjeta a la vez)
+         ==================================================================== -->
+    <section id="view-exam" class="view-section">
+      <!-- Navegación superior del examen -->
+      <div class="exam-navbar">
+        <div class="exam-nav-left">
+          <button class="btn-exit-exam" onclick="App.confirmExitExam()" title="Salir del examen y regresar al menú">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Salir
+          </button>
+          <span id="exam-modality-title" class="exam-modality-badge">Simulador ISOFT</span>
+          <button class="btn-finish-early" id="btn-finish-early" onclick="App.finishExamEarly()" title="Finalizar sesión y ver diagnóstico del tutor">
+            📊 Diagnóstico Tutor
+          </button>
+        </div>
+
+        <div class="exam-counter-badge" id="exam-counter">
+          Reactivo 1 de 30
+        </div>
+      </div>
+
+      <!-- Barra de Progreso Superior -->
+      <div class="progress-container">
+        <div class="progress-bar-fill" id="exam-progress-bar"></div>
+      </div>
+
+      <!-- Tarjeta del Reactivo Actual -->
+      <article class="question-card" id="current-question-card">
+        <div class="question-header">
+          <span class="area-tag" id="q-area-tag">Área 1: Análisis</span>
+          <span class="subarea-tag" id="q-subarea-tag">Requerimientos No Funcionales</span>
+        </div>
+
+        <!-- Panel de Lectura / Caso Técnico (Se oculta si no aplica) -->
+        <div class="reading-panel" id="q-reading-panel" style="display:none;">
+          <div class="reading-panel-header">
+            <span class="reading-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              Texto de Referencia / Caso
+            </span>
+            <button class="btn-toggle-reading" id="btn-toggle-reading" onclick="App.toggleReadingVisibility()">Ocultar texto</button>
+          </div>
+          <div class="reading-content" id="q-reading-content"></div>
+        </div>
+
+        <!-- Enunciado de la Pregunta -->
+        <h3 class="question-prompt" id="q-prompt">Cargando reactivo...</h3>
+
+        <!-- Opciones A, B, C -->
+        <div class="options-list" id="options-container">
+          <!-- Generadas dinámicamente -->
+        </div>
+
+        <!-- Barra de Acciones del Reactivo -->
+        <div class="exam-actions-bar">
+          <button id="btn-check-answer" class="btn-primary-action" onclick="App.checkCurrentAnswer()" disabled>
+            <span>Comprobar respuesta</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+          <button id="btn-next-question" class="btn-primary-action" onclick="App.goToNextQuestion()" style="display:none;">
+            <span>Siguiente reactivo</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </div>
+
+        <!-- Panel del Asistente Pedagógico (Aparece de inmediato al comprobar) -->
+        <div class="assistant-feedback-panel" id="assistant-feedback-panel">
+          <!-- Banner de estado: Correcto o Incorrecto -->
+          <div class="feedback-banner" id="feedback-banner">
+            <div class="feedback-icon" id="feedback-banner-icon">✔️</div>
+            <div class="feedback-text">
+              <h4 id="feedback-banner-title">¡Correcto!</h4>
+              <p id="feedback-banner-summary">Has seleccionado la respuesta válida.</p>
+            </div>
+          </div>
+
+          <!-- Argumentación técnica de cada opción A, B, C -->
+          <div class="options-argumentation">
+            <div class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Argumentación Técnica por Opción
+            </div>
+            <div id="options-breakdown-container">
+              <!-- Insertado por JS -->
+            </div>
+          </div>
+
+          <!-- Concepto Clave y Referencia Oficial -->
+          <div class="pedagogical-capsules">
+            <div class="capsule-box key-concept">
+              <h5>💡 Concepto Clave CENEVAL</h5>
+              <p id="feedback-key-concept">Concepto técnico fundamental a recordar.</p>
+            </div>
+            <div class="capsule-box reference">
+              <h5>📚 Referencia Oficial</h5>
+              <p id="feedback-reference">Bibliografía oficial.</p>
+            </div>
+          </div>
+
+          <!-- Consultas Adicionales al Asistente IA -->
+          <div class="interactive-assistant-bar">
+            <div class="assistant-prompt-label">¿Deseas profundizar con el Asistente Pedagógico?</div>
+            <button class="btn-assistant-query" onclick="App.askAssistantExtra('analogy')">💡 Analogía cotidiana</button>
+            <button class="btn-assistant-query" onclick="App.askAssistantExtra('mnemonic')">🧠 Tip mnemotécnico</button>
+            <button class="btn-assistant-query" onclick="App.askAssistantExtra('practical')">🛠️ Aplicación real en software</button>
+            <div class="assistant-response-area" id="assistant-extra-response"></div>
+          </div>
+
+          <!-- Botón de avance al pie de la retroalimentación para máxima comodidad de lectura -->
+          <div class="feedback-footer-action" style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+            <button id="btn-next-question-bottom" class="btn-primary-action" onclick="App.goToNextQuestion()">
+              <span>Siguiente reactivo</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+      </article>
+    </section>
+
+
+    <!-- ====================================================================
+         VISTA 3: PANTALLA DE RESULTADOS FINAL (Tras responder el reactivo 30)
+         ==================================================================== -->
+    <section id="view-results" class="view-section">
+      <article class="results-card">
+        <div class="score-display-wrapper">
+          <div class="score-circle">
+            <span class="score-number" id="result-score-num">24</span>
+            <span class="score-max">de 30 aciertos</span>
+          </div>
+
+          <div id="result-tier-badge" class="performance-tier-badge sobresaliente">
+            🌟 Nivel Sobresaliente (D-SS)
+          </div>
+
+          <p class="score-subtitle" id="result-subtitle">
+            ¡Excelente desempeño técnico! Has demostrado un dominio riguroso de los conceptos de ingeniería de software y comprensión crítica.
+          </p>
+        </div>
+
+        <!-- Panel del Tutor Pedagógico CENEVAL (Diagnóstico Personalizado de Áreas a Reforzar) -->
+        <div id="tutor-diagnostic-container"></div>
+
+        <!-- Desglose por áreas -->
+        <div class="breakdown-section">
+          <h3 class="breakdown-title">📊 Desglose de Desempeño por Áreas Evaluadas</h3>
+          <div class="area-progress-list" id="results-breakdown-list">
+            <!-- Rellenado por JS -->
+          </div>
+        </div>
+
+        <!-- Acciones Finales -->
+        <div class="results-actions">
+          <button id="btn-review-failed" class="btn-primary-action" onclick="App.startReviewMode()">
+            🔍 Revisar reactivos fallados (<span id="count-failed-items">0</span>)
+          </button>
+          <button class="btn-secondary" onclick="App.restartExamSameModality()">
+            🔄 Comenzar nuevo examen de 30 preguntas
+          </button>
+          <button class="btn-secondary" onclick="App.goToHome()">
+            🏠 Volver al menú de inicio
+          </button>
+        </div>
+      </article>
+    </section>
+
+
+    <!-- ====================================================================
+         VISTA 4: MODO REVISIÓN DE FALLADOS (Enfocado, sin estrés)
+         ==================================================================== -->
+    <section id="view-review" class="view-section">
+      <div class="review-header-bar">
+        <div class="review-badge" id="review-counter">
+          Revisando reactivo 1 de 6 fallados
+        </div>
+        <button class="btn-exit-exam" onclick="App.exitReviewMode()">
+          Finalizar revisión ✕
+        </button>
+      </div>
+
+      <article class="question-card" id="review-question-card">
+        <div class="question-header">
+          <span class="area-tag" id="rev-area-tag">Área</span>
+          <span class="subarea-tag" id="rev-subarea-tag">Subárea</span>
+        </div>
+
+        <div class="reading-panel" id="rev-reading-panel" style="display:none;">
+          <div class="reading-content" id="rev-reading-content"></div>
+        </div>
+
+        <h3 class="question-prompt" id="rev-prompt">Enunciado</h3>
+
+        <div class="options-list" id="rev-options-container">
+          <!-- Opciones con marcas de tu respuesta vs la correcta -->
+        </div>
+
+        <!-- Explicación pedagógica de la revisión -->
+        <div class="assistant-feedback-panel active" style="margin-top:1.5rem;">
+          <div class="options-argumentation">
+            <div class="section-label">Fundamentación Oficial CENEVAL</div>
+            <div id="rev-options-breakdown"></div>
+          </div>
+          <div class="pedagogical-capsules">
+            <div class="capsule-box key-concept">
+              <h5>💡 Concepto a Reforzar</h5>
+              <p id="rev-key-concept"></p>
+            </div>
+            <div class="capsule-box reference">
+              <h5>📚 Referencia Bibliográfica</h5>
+              <p id="rev-reference"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="exam-actions-bar" style="margin-top:2rem;">
+          <button class="btn-primary-action" id="btn-next-review" onclick="App.goToNextReviewItem()">
+            <span>Siguiente reactivo fallado</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+
+  <!-- ====================================================================
+       MODAL: SELECTOR DE ÁREA ESPECÍFICA (Para la Modalidad 4)
+       ==================================================================== -->
+  <div class="modal-overlay" id="area-selector-modal" onclick="App.closeAreaModalOnBackdrop(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Seleccionar Área de Estudio</h3>
+        <button class="icon-button" onclick="App.closeAreaSelectorModal()" aria-label="Cerrar modal">✕</button>
+      </div>
+      <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+        Se generará un examen de 30 reactivos enfocado 100% en el área que selecciones:
+      </p>
+
+      <div class="area-options-list">
+        <label class="area-option-item">
+          <input type="radio" name="target-area" value="area_1" checked>
+          <div class="area-info-text">
+            <strong>Área 1: Análisis de Sistemas de Software</strong>
+            <span>Requerimientos ISO 25010, MoSCoW, Kano, Casos de Uso, Historias de Usuario</span>
+          </div>
+        </label>
+
+        <label class="area-option-item">
+          <input type="radio" name="target-area" value="area_2">
+          <div class="area-info-text">
+            <strong>Área 2: Diseño de Sistemas de Software</strong>
+            <span>4+1 Vistas, Patrones GoF, Acoplamiento, Cohesión, Base de Datos, Usabilidad Nielsen</span>
+          </div>
+        </label>
+
+        <label class="area-option-item">
+          <input type="radio" name="target-area" value="area_3">
+          <div class="area-info-text">
+            <strong>Área 3: Desarrollo de Sistemas de Software</strong>
+            <span>Paradigmas POO/Funcional, SQL Transaccional ACID, Git, Pruebas TDD y Cobertura</span>
+          </div>
+        </label>
+
+        <label class="area-option-item">
+          <input type="radio" name="target-area" value="area_4">
+          <div class="area-info-text">
+            <strong>Área 4: Gestión de Proyectos de Software</strong>
+            <span>Estimaciones COCOMO, Scrum, XP, Kanban, RUP, Métricas de Calidad y CMMI</span>
+          </div>
+        </label>
+
+        <label class="area-option-item">
+          <input type="radio" name="target-area" value="lectura">
+          <div class="area-info-text">
+            <strong>Lenguaje y Comunicación: Comprensión Lectora</strong>
+            <span>Ámbitos de estudio, literario y social; identificación, interpretación y evaluación</span>
+          </div>
+        </label>
+
+        <label class="area-option-item">
+          <input type="radio" name="target-area" value="redaccion">
+          <div class="area-info-text">
+            <strong>Lenguaje y Comunicación: Redacción Indirecta</strong>
+            <span>Ámbitos de estudio y social; dimensión comunicativa, gramatical-semántica y ortográfica</span>
+          </div>
+        </label>
+      </div>
+
+      <button class="btn-start-exam" onclick="App.startAreaSpecificExam()">
+        Comenzar 30 Reactivos de esta Área
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL: BIBLIOGRAFÍA Y ESTRUCTURA OFICIAL CENEVAL (Extraído de la Guía Oficial)
+       ==================================================================== -->
+  <div class="modal-overlay" id="bibliography-modal" onclick="App.closeBibliographyModalOnBackdrop(event)">
+    <div class="modal-box" style="max-width:760px; max-height:85vh; overflow-y:auto;">
+      <div class="modal-header">
+        <h3 class="modal-title">📚 Guía Oficial EGEL Plus ISOFT - CENEVAL</h3>
+        <button class="icon-button" onclick="App.closeBibliographyModal()" aria-label="Cerrar modal">✕</button>
+      </div>
+      
+      <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+        Estructura formal del examen (203 reactivos totales: 143 disciplinares + 60 de lenguaje y comunicación) y referencias bibliográficas sugeridas por el Consejo Técnico.
+      </p>
+
+      <!-- Pestañas simples para no saturar -->
+      <div style="display:flex; gap:0.5rem; margin-bottom:1.25rem; flex-wrap:wrap;">
+        <button class="btn-secondary" id="tab-btn-standards" onclick="App.showBibTab('standards')" style="font-size:0.85rem; padding:0.4rem 0.75rem;">Normas y Estándares</button>
+        <button class="btn-secondary" id="tab-btn-structure" onclick="App.showBibTab('structure')" style="font-size:0.85rem; padding:0.4rem 0.75rem;">Estructura (Subáreas)</button>
+        <button class="btn-secondary" id="tab-btn-books" onclick="App.showBibTab('books')" style="font-size:0.85rem; padding:0.4rem 0.75rem;">Bibliografía Sugerida</button>
+      </div>
+
+      <!-- Contenedor dinámico de información -->
+      <div id="bib-tab-content" style="font-size:0.9rem; line-height:1.6; color:var(--text-primary);">
+        <!-- Rellenado por JS -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL: CONFIRMACIÓN PARA SALIR DEL EXAMEN
+       ==================================================================== -->
+  <div class="modal-overlay" id="exit-confirm-modal">
+    <div class="modal-box" style="max-width:420px; text-align:center;">
+      <h3 style="font-size:1.3rem; margin-bottom:0.75rem;">¿Deseas salir del examen?</h3>
+      <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:1.5rem;">
+        Si abandonas la sesión actual perderás el progreso no completado de esta tanda de 30 reactivos.
+      </p>
+      <div style="display:flex; gap:0.75rem; justify-content:center;">
+        <button class="btn-secondary" onclick="App.cancelExitModal()">Continuar examen</button>
+        <button class="btn-primary-action" style="background-color:var(--color-error);" onclick="App.confirmExitNow()">Sí, salir</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Lógica JavaScript Principal -->
+  <script src="/static/js/app.js?v=2.1"></script>
+
+  <!-- Registro del Service Worker (PWA) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('✅ PWA Service Worker registrado con éxito en scope:', reg.scope))
+          .catch((err) => console.warn('⚠️ Error registrando Service Worker:', err));
+      });
+    }
+  </script>
+</body>
+</html>

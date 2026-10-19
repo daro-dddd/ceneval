@@ -10,4 +10,8 @@ Thumbs.db
 *.tmp
 *.log
 scratch/
-
+__pycache__/
+*.pyc
+legacy_backup/
+data/exams/*.json
+!data/exams/.gitkeep
